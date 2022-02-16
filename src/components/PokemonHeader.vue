@@ -1,6 +1,6 @@
 <template>
   <header class="header">
-    <h1>Welcome to the Pokedex Homepage!</h1>
+    <h1>Welcome to the Pokemon Homepage!</h1>
     <img src="@/assets/Pokemon.png" width="205" height="82" />
   </header>
 </template>

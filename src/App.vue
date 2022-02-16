@@ -1,16 +1,18 @@
 <template>
 <pokemon-header></pokemon-header>
- 
+ <pokemon-list></pokemon-list>
 </template>
 
 <script>
 
 import PokemonHeader from './components/PokemonHeader.vue'
+import PokemonList from './components/PokemonList.vue'
 
 export default {
-  name: 'App',
+  name: 'app',
   components: {
-    PokemonHeader
+    PokemonHeader,
+    PokemonList
   }
 }
 </script>
