@@ -19,11 +19,9 @@ h1 {
 .header {
   text-align: center;
   background: #f30814;
-  padding: 10px;
+  padding: 13px;
   margin-top: 0px;
-  margin-right: -20px;
   margin-left: -10px;
-  width: 100%;
 }
 
 img {
