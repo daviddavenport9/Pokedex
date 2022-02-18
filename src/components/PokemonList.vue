@@ -19,27 +19,37 @@
         </li>
       </div>
     </ul>
-     <!-- modal -->
-     <div v-if="showModal" id="modal">
-        <h3>Pokemon species #{{ speciesNo }}</h3>
-        <img :src="sprite" width="200" height="200" id="sprite" />
-        <h1 id="details-name">{{ name }}</h1>
-        <h3 v-for="(pokemonTypes, index) in types" :key="index" class="pokemonTypes">
-          {{ pokemonTypes.type.name }}
-        </h3>
-        <p style="color: white">{{ flavorText }}</p>
-        <hr />
-        <div class="columns">
-          <p>Height: {{ getHeight() }}</p>
-          <p>Weight: {{ getWeight() }}</p>
-        </div>
-        <h3>Abilities: </h3>
-        <h5 v-for="(ability, index) in abilities" :key="index" class="pokemonAbilities">
-          {{ ability.ability.name }}
-        </h5>
-        <br>
-        <button @click="showModal = false" id="closeButton">Close</button>
+    <!-- modal -->
+    <div v-if="showModal" id="modal">
+      <h3 style="color: white">Pokemon species #{{ speciesNo }}</h3>
+      <img :src="sprite" width="200" height="200" id="sprite" />
+      <h1 id="details-name">{{ name }}</h1>
+      <h3
+        v-for="(pokemonTypes, index) in types"
+        :key="index"
+        class="pokemonTypes"
+        :style="{ color: color, 'border-color': color }"
+      >
+        {{ pokemonTypes.type.name }}
+      </h3>
+      <p style="color: white">{{ flavorText }}</p>
+      <hr />
+      <div class="columns">
+        <p>Height: {{ getHeight() }}</p>
+        <p>Weight: {{ getWeight() }}</p>
       </div>
+      <h3 style="color: white">Abilities:</h3>
+      <h5
+        v-for="(ability, index) in abilities"
+        :key="index"
+        class="pokemonAbilities"
+        :style="{ 'background-color': color }"
+      >
+        {{ ability.ability.name }}
+      </h5>
+      <br />
+      <button @click="showModal = false" id="closeButton">Close</button>
+    </div>
   </body>
 </template>
 
@@ -59,6 +69,7 @@ export default {
       weight: null,
       flavorText: null,
       types: [],
+      color: null,
     };
   },
 
@@ -93,6 +104,7 @@ export default {
         .get("https://pokeapi.co/api/v2/pokemon-species/" + index)
         .then((res) => {
           this.flavorText = res.data.flavor_text_entries[1].flavor_text;
+          this.color = res.data.color.name;
         });
     },
 
@@ -160,10 +172,10 @@ li {
   position: fixed;
   z-index: 999;
   top: 10%;
-  left: 50%;
+  left: 47%;
   width: 450px;
   margin-left: -150px;
-  background-color: green;
+  background-color: rgb(44, 37, 37);
   padding-top: 20px;
   padding-left: 40px;
   padding-right: 40px;
@@ -185,7 +197,7 @@ li {
 }
 
 #closeButton {
-  background-color: rgb(0, 0, 0);
+  background-color: rgb(67, 1, 248);
   border: none;
   color: white;
   padding: 15px 32px;
@@ -198,22 +210,25 @@ li {
   margin-top: 30px;
 }
 
-
 .pokemonAbilities {
   display: inline-block;
-    border: 1px solid black;
-    box-shadow: 1px 2px 2px black;
-    border-radius: 15px;
-    padding: 3%;
-    margin-right: 20px;
-    background-color: white;
+  border: 1px solid black;
+  box-shadow: 1px 2px 2px black;
+  border-radius: 15px;
+  padding: 3%;
+  margin-right: 20px;
+  color: white;
+  text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000,
+    1px 1px 0 #000;
 }
 .pokemonTypes {
   display: inline-block;
-    border: 1px solid black;
-    box-shadow: 1px 2px 2px black;
-    border-radius: 15px;
-    padding: 3%;
-    margin-right: 20px;
+  border: 1px solid;
+  box-shadow: 1px 2px 2px black;
+  border-radius: 15px;
+  padding: 3%;
+  margin-right: 20px;
+  text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000,
+    1px 1px 0 #000;
 }
 </style>
