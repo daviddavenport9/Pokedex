@@ -3,6 +3,7 @@
     <img src="@/assets/pokedex.png" width="700" height="300" />
   </div>
   <body>
+    <!-- Pokemon Cards -->
     <ul>
       <div class="outerWrapper">
         <li v-for="(pokemon, index) in pokemonList" :key="index">
@@ -11,27 +12,34 @@
             width="250"
             height="250"
           />
-          <h2 style="text-transform:capitalize">{{ pokemon.name }}</h2>
+          <h2 style="text-transform: capitalize">{{ pokemon.name }}</h2>
           <button id="button" @click="getDetails(index + 1)">
             Show Details
           </button>
         </li>
       </div>
-
-      <div v-if="showModal" id="modal">
+    </ul>
+     <!-- modal -->
+     <div v-if="showModal" id="modal">
         <h3>Pokemon species #{{ speciesNo }}</h3>
         <img :src="sprite" width="200" height="200" id="sprite" />
-        <h1 id="details-name">{{name}}</h1>
-        <h3>{{types}}</h3>
+        <h1 id="details-name">{{ name }}</h1>
+        <h3 v-for="(pokemonTypes, index) in types" :key="index" class="pokemonTypes">
+          {{ pokemonTypes.type.name }}
+        </h3>
         <p style="color: white">{{ flavorText }}</p>
-        <hr/>
+        <hr />
         <div class="columns">
-        <p id="details-height">Height: {{ getHeight() }}</p>
-        <p id="details-weight">Weight: {{ getWeight() }}</p>
+          <p>Height: {{ getHeight() }}</p>
+          <p>Weight: {{ getWeight() }}</p>
         </div>
-        <button @click="showModal = false">Close</button>
+        <h3>Abilities: </h3>
+        <h5 v-for="(ability, index) in abilities" :key="index" class="pokemonAbilities">
+          {{ ability.ability.name }}
+        </h5>
+        <br>
+        <button @click="showModal = false" id="closeButton">Close</button>
       </div>
-    </ul>
   </body>
 </template>
 
@@ -50,7 +58,7 @@ export default {
       height: null,
       weight: null,
       flavorText: null,
-      types: []
+      types: [],
     };
   },
 
@@ -74,12 +82,12 @@ export default {
       this.types = [];
       axios.get("https://pokeapi.co/api/v2/pokemon/" + index).then((res) => {
         this.name = res.data.name;
-        this.abilities.push(res.data.abilities);
+        this.abilities = res.data.abilities;
         this.speciesNo = index;
         this.weight = res.data.weight;
         this.height = res.data.height;
         this.sprite = res.data.sprites.front_default;
-        this.types.push(res.data.types.name)
+        this.types = res.data.types;
       });
       axios
         .get("https://pokeapi.co/api/v2/pokemon-species/" + index)
@@ -96,7 +104,14 @@ export default {
     getWeight() {
       let intWeightKg = parseFloat(this.weight * 0.1).toFixed(1);
       let intWeightLbs = (2.2046226218 * intWeightKg).toFixed(1);
-     return intWeightKg.toString() + " kg " + "(" + intWeightLbs.toString() + " lbs" + ")";
+      return (
+        intWeightKg.toString() +
+        " kg " +
+        "(" +
+        intWeightLbs.toString() +
+        " lbs" +
+        ")"
+      );
     },
   },
 
@@ -144,7 +159,7 @@ li {
 #modal {
   position: fixed;
   z-index: 999;
-  top: 20%;
+  top: 10%;
   left: 50%;
   width: 450px;
   margin-left: -150px;
@@ -158,24 +173,47 @@ li {
 
 #details-name {
   color: white;
-  text-transform:capitalize;
+  text-transform: capitalize;
   text-align: center;
 }
-
-/* #details-height, #details-weight{
-  color: white;
-  display: inline-block;
-} */
 
 .columns {
   columns: 40px 2;
   font-size: 20px;
   color: white;
-  column-rule-style: solid;
-  column-rule-color: grey;
-  padding-bottom: 20px;
+  padding-bottom: 0px;
+}
+
+#closeButton {
+  background-color: rgb(0, 0, 0);
+  border: none;
+  color: white;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 14px;
+  border-radius: 12px;
+  margin-bottom: 20px;
+  margin-top: 30px;
 }
 
 
-
+.pokemonAbilities {
+  display: inline-block;
+    border: 1px solid black;
+    box-shadow: 1px 2px 2px black;
+    border-radius: 15px;
+    padding: 3%;
+    margin-right: 20px;
+    background-color: white;
+}
+.pokemonTypes {
+  display: inline-block;
+    border: 1px solid black;
+    box-shadow: 1px 2px 2px black;
+    border-radius: 15px;
+    padding: 3%;
+    margin-right: 20px;
+}
 </style>
