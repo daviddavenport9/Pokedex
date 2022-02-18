@@ -4,16 +4,17 @@
   </div>
   <div>
     <ul>
-      
-      <li v-for="(pokemon, index) in pokemonList" :key="index">
-        <h2>{{ pokemon.name }}</h2>
-        <img
-          :src="pokemon.sprites.other['official-artwork']['front_default']"
-          width="250"
-          height="250"
-        />
-        <h5>Pokemon species no. {{ index }}</h5>
-      </li>
+      <div @click="showModal = true" class="outerWrapper">
+        <li v-for="(pokemon, index) in pokemonList" :key="index">
+          <img
+            :src="pokemon.sprites.other['official-artwork']['front_default']"
+            width="250"
+            height="250"
+          />
+          <h2>{{ pokemon.name }}</h2>
+          <h5>Pokemon species no. {{ index + 1 }}</h5>
+        </li>
+      </div>
     </ul>
   </div>
 </template>
@@ -26,7 +27,7 @@ export default {
       pokemonList: [],
       PokemonURL: "https://pokeapi.co/api/v2/pokemon?limit=100",
       promiseArray: [],
-      showModal: false
+      showModal: false,
     };
   },
 
@@ -43,6 +44,10 @@ export default {
         })
         .catch((err) => console.log(err));
     },
+
+    test() {
+      console.log("Hi");
+    },
   },
 
   mounted() {
@@ -52,25 +57,28 @@ export default {
 </script>
 
 <style scoped>
-img {
-  display: inline-block;
-}
-
 #imgContainer {
   text-align: center;
   width: 100%;
 }
 
 ul {
-  list-style: none;
-  width: 100%;
+ margin-left: 100px;
 }
 
 li {
   display: inline-block;
   padding: 4px 10px;
   background-color: #eee;
-  border-radius: 5px;
+  border-color: blue;
   text-align: center;
+  margin-right: 10px;
+  margin-bottom: 10px;
 }
+
+.outerWrapper :hover{
+  background-color:rgb(197, 202, 216);
+  cursor: pointer;
+}
+
 </style>
