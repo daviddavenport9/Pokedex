@@ -1,6 +1,5 @@
 <template>
   <header class="header">
-    <h1>Welcome to the Pokemon Homepage!</h1>
     <img src="@/assets/Pokemon.png" width="205" height="82" />
   </header>
 </template>
@@ -21,7 +20,7 @@ h1 {
   text-align: center;
   background: #f30814;
   padding: 10px;
-  margin-top: -20px;
+  margin-top: 0px;
   margin-right: -20px;
   margin-left: -10px;
   width: 100%;
