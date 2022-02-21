@@ -189,7 +189,10 @@ li {
   text-align: center;
   border-radius: 30px;
   height: auto;
-  
+  -webkit-animation-name: zoom;
+    -webkit-animation-duration: 0.4s;
+    animation-name: zoom;
+    animation-duration: 0.4s;
 }
 
 .outerModal {
@@ -212,10 +215,6 @@ li {
   margin: auto;
   padding: 0;
   width: 80%;
-  -webkit-animation-name: animatetop;
-  -webkit-animation-duration: 0.4s;
-  animation-name: animatetop;
-  animation-duration: 0.4s
 }
 
 #details-name {
@@ -280,27 +279,13 @@ li {
   margin: 20px;
 }
 
-/* Add Animation */
-@-webkit-keyframes animatetop {
-  from {
-    top: -300px;
-    opacity: 0;
-  }
-  to {
-    top: 0;
-    opacity: 1;
-  }
+@-webkit-keyframes zoom {
+    from {-webkit-transform:scale(1)}
+    to {-webkit-transform:scale(2)}
 }
-
-@keyframes animatetop {
-  from {
-    top: -300px;
-    opacity: 0;
-  }
-  to {
-    top: 0;
-    opacity: 1;
-  }
+@keyframes zoom {
+    from {transform:scale(0.4)}
+    to {transform:scale(1)}
 }
 
 /* The Close Button */
