@@ -20,43 +20,70 @@
       </div>
     </ul>
     <!-- modal -->
-    <div :class="{'outerModal': showModal}">
-    <div v-if="showModal" id="modal" class="myModal">
-      <div class="modal-header">
-           <h3 style="color: white">Pokemon species #{{ speciesNo }}</h3>
-        <span class="close" @click="showModal = false">&times;</span>
-      </div>
-      <div class="modalContent">
-        <div :style="{ 'background-color': color }" id="detailsBackground">
-          <img :src="sprite" width="150" height="150" id="sprite" />
+    <div :class="{ outerModal: showModal }">
+      <div v-if="showModal" id="modal">
+        <div class="modal-header">
+          <h3 style="color: white">Pokemon Species #{{ speciesNo }}</h3>
+          <span class="close" @click="showModal = false">&times;</span>
         </div>
-        <h1 id="details-name">{{ name }}</h1>
-        <h3
-          v-for="(pokemonTypes, index) in types"
-          :key="index"
-          class="pokemonTypes"
-          :style="{ color: color, 'border-color': color }"
-        >
-          {{ pokemonTypes.type.name }}
-        </h3>
-        <p style="color: white">{{ flavorText }}</p>
-        <hr />
-        <div class="columns">
-          <p>Height: {{ getHeight() }}</p>
-          <p>Weight: {{ getWeight() }}</p>
+        <div id="detailsNav">
+          <button @click="getDetails(pokemonNumber)">Details</button>
+          <button @click="getStats()">Stats</button>
+          <button>Evolution</button>
         </div>
-        <h3 style="color: white">Abilities:</h3>
-        <h5
-          v-for="(ability, index) in abilities"
-          :key="index"
-          class="pokemonAbilities"
-          :style="{ 'background-color': color }"
-        >
-          {{ ability.ability.name }}
-        </h5>
+        <div class="modalContent-Details" v-if="detailsCheck">
+          <div :style="{ 'background-color': color }" id="detailsBackground">
+            <img :src="sprite" width="150" height="150" id="sprite" />
+          </div>
+          <h1 class="details-name">{{ name }}</h1>
+          <h3
+            v-for="(pokemonTypes, index) in types"
+            :key="index"
+            class="pokemonTypes"
+            :style="{ color: color, 'border-color': color }"
+          >
+            {{ pokemonTypes.type.name }}
+          </h3>
+          <p style="color: white">{{ flavorText }}</p>
+          <hr />
+          <div class="columns">
+            <p>Height: {{ getHeight() }}</p>
+            <p>Weight: {{ getWeight() }}</p>
+          </div>
+          <h3 style="color: white">Abilities:</h3>
+          <h5
+            v-for="(ability, index) in abilities"
+            :key="index"
+            class="pokemonAbilities"
+            :style="{ 'background-color': color }"
+          >
+            {{ ability.ability.name }}
+          </h5>
+        </div>
+        <!-- Card Contents  -->
+        <div v-if="statsCheck">
+          <div :style="{ 'background-color': color }" id="detailsBackground">
+            <img :src="sprite" width="150" height="150" id="sprite" />
+          </div>
+          <h1 class="details-name">{{ name }}</h1>
+          <div v-for="(pokemonStats, index) in stats" :key="index" id="outerStatsContainer">
+            
+            <div id="progress">
+              <div
+                id="progressBar"
+                :style="pokemonStats.base_stat > 100 ? { width: '100%', 'background-color': color} : {width:  pokemonStats.base_stat + '%', 'background-color': color }"
+              >
+                <p id="statNumber">{{ pokemonStats.base_stat }}</p>
+              </div>
+            </div>
+            <p style="color: white">{{ pokemonStats.stat.name }}</p>
+          </div>
+        </div>
+        <!-- Stats  -->
       </div>
+      <!-- Modal -->
     </div>
-    </div>
+    <!-- Outer Modal experience  -->
   </body>
 </template>
 
@@ -77,6 +104,11 @@ export default {
       flavorText: null,
       types: [],
       color: null,
+      pokemonNumber: "",
+      detailsCheck: false,
+      stats: [],
+      statsCheck: false,
+      progress: null,
     };
   },
 
@@ -98,6 +130,8 @@ export default {
       this.showModal = true;
       this.abilities = [];
       this.types = [];
+      this.detailsCheck = true;
+      this.statsCheck = false;
       axios.get("https://pokeapi.co/api/v2/pokemon/" + index).then((res) => {
         this.name = res.data.name;
         this.abilities = res.data.abilities;
@@ -106,6 +140,8 @@ export default {
         this.height = res.data.height;
         this.sprite = res.data.sprites.other.dream_world.front_default;
         this.types = res.data.types;
+        this.pokemonNumber = index.toString();
+        this.stats = res.data.stats;
       });
       axios
         .get("https://pokeapi.co/api/v2/pokemon-species/" + index)
@@ -113,6 +149,15 @@ export default {
           this.flavorText = res.data.flavor_text_entries[1].flavor_text;
           this.color = res.data.color.name;
         });
+    },
+
+    getStats() {
+      console.log(this.stats);
+      this.detailsCheck = false;
+      this.statsCheck = true;
+      console.log(this.stats[0].base_stat);
+      console.log(this.stats[0].stat.name);
+      //this.progress = this.stats[0].base_stat;
     },
 
     getHeight() {
@@ -180,7 +225,7 @@ li {
   z-index: 999;
   top: 10%;
   left: 47%;
-  width: 450px;
+  width: 500px;
   margin-left: -150px;
   background-color: rgb(44, 37, 37);
   padding-top: 20px;
@@ -190,9 +235,9 @@ li {
   border-radius: 30px;
   height: auto;
   -webkit-animation-name: zoom;
-    -webkit-animation-duration: 0.4s;
-    animation-name: zoom;
-    animation-duration: 0.4s;
+  -webkit-animation-duration: 0.4s;
+  animation-name: zoom;
+  animation-duration: 0.4s;
 }
 
 .outerModal {
@@ -202,22 +247,20 @@ li {
   position: fixed;
   z-index: 1;
   padding-top: 100px;
-   background-color: rgb(0,0,0);
-   background-color: rgba(0,0,0,0.4);
-   width: 100%;
+  background-color: rgb(0, 0, 0);
+  background-color: rgba(0, 0, 0, 0.4);
+  width: 100%;
   height: 100%;
 }
 
-
-
-.modalContent {
+.modalContentDetails {
   position: relative;
   margin: auto;
   padding: 0;
   width: 80%;
 }
 
-#details-name {
+.details-name {
   color: white;
   text-transform: capitalize;
   text-align: center;
@@ -280,12 +323,20 @@ li {
 }
 
 @-webkit-keyframes zoom {
-    from {-webkit-transform:scale(1)}
-    to {-webkit-transform:scale(2)}
+  from {
+    -webkit-transform: scale(1);
+  }
+  to {
+    -webkit-transform: scale(2);
+  }
 }
 @keyframes zoom {
-    from {transform:scale(0.4)}
-    to {transform:scale(1)}
+  from {
+    transform: scale(0.4);
+  }
+  to {
+    transform: scale(1);
+  }
 }
 
 /* The Close Button */
@@ -308,9 +359,60 @@ li {
   padding: 2px 16px;
   color: white;
   border-bottom: none;
+  margin-left: 60px;
 }
 
 .modal-body {
   padding: 2px 16px;
+}
+
+#detailsNav {
+  margin-bottom: 60px;
+  margin-left: 50px;
+}
+
+#detailsNav button {
+  background-color: rgb(44, 37, 37);
+  border: none;
+  color: white;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  font-size: 16px;
+  cursor: pointer;
+  float: left;
+}
+
+#detailsNav button:hover {
+  background-color: #444141fd;
+}
+
+#progress {
+  width: 60%;
+  background-color: grey;
+  margin-bottom: 20px;
+}
+
+#progressBar {
+  width: 1%;
+  height: 20px;
+  padding-bottom: 30px;
+}
+
+#statNumber {
+  color: white;
+  text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000,
+    1px 1px 0 #000;
+    margin-left: 40px;
+}
+
+#outerStatsContainer {
+  display: flex;
+}
+#outerStatsContainer p {
+ margin-right: 20px;
+ text-align: left;
+ margin-left: 20px;
+ text-transform: capitalize;
 }
 </style>
