@@ -20,37 +20,42 @@
       </div>
     </ul>
     <!-- modal -->
-    <div v-if="showModal" id="modal">
-      <h3 style="color: white">Pokemon species #{{ speciesNo }}</h3>
-      <div :style="{'background-color': color,}" id="detailsBackground">
-      <img :src="sprite" width="150" height="150" id="sprite" />
+    <div :class="{'outerModal': showModal}">
+    <div v-if="showModal" id="modal" class="myModal">
+      <div class="modal-header">
+           <h3 style="color: white">Pokemon species #{{ speciesNo }}</h3>
+        <span class="close" @click="showModal = false">&times;</span>
       </div>
-      <h1 id="details-name">{{ name }}</h1>
-      <h3
-        v-for="(pokemonTypes, index) in types"
-        :key="index"
-        class="pokemonTypes"
-        :style="{ color: color, 'border-color': color }"
-      >
-        {{ pokemonTypes.type.name }}
-      </h3>
-      <p style="color: white">{{ flavorText }}</p>
-      <hr />
-      <div class="columns">
-        <p>Height: {{ getHeight() }}</p>
-        <p>Weight: {{ getWeight() }}</p>
+      <div class="modalContent">
+        <div :style="{ 'background-color': color }" id="detailsBackground">
+          <img :src="sprite" width="150" height="150" id="sprite" />
+        </div>
+        <h1 id="details-name">{{ name }}</h1>
+        <h3
+          v-for="(pokemonTypes, index) in types"
+          :key="index"
+          class="pokemonTypes"
+          :style="{ color: color, 'border-color': color }"
+        >
+          {{ pokemonTypes.type.name }}
+        </h3>
+        <p style="color: white">{{ flavorText }}</p>
+        <hr />
+        <div class="columns">
+          <p>Height: {{ getHeight() }}</p>
+          <p>Weight: {{ getWeight() }}</p>
+        </div>
+        <h3 style="color: white">Abilities:</h3>
+        <h5
+          v-for="(ability, index) in abilities"
+          :key="index"
+          class="pokemonAbilities"
+          :style="{ 'background-color': color }"
+        >
+          {{ ability.ability.name }}
+        </h5>
       </div>
-      <h3 style="color: white">Abilities:</h3>
-      <h5
-        v-for="(ability, index) in abilities"
-        :key="index"
-        class="pokemonAbilities"
-        :style="{ 'background-color': color }"
-      >
-        {{ ability.ability.name }}
-      </h5>
-      <br />
-      <button @click="showModal = false" id="closeButton">Close</button>
+    </div>
     </div>
   </body>
 </template>
@@ -184,6 +189,33 @@ li {
   text-align: center;
   border-radius: 30px;
   height: auto;
+  
+}
+
+.outerModal {
+  top: 0;
+  left: 0;
+  display: block;
+  position: fixed;
+  z-index: 1;
+  padding-top: 100px;
+   background-color: rgb(0,0,0);
+   background-color: rgba(0,0,0,0.4);
+   width: 100%;
+  height: 100%;
+}
+
+
+
+.modalContent {
+  position: relative;
+  margin: auto;
+  padding: 0;
+  width: 80%;
+  -webkit-animation-name: animatetop;
+  -webkit-animation-duration: 0.4s;
+  animation-name: animatetop;
+  animation-duration: 0.4s
 }
 
 #details-name {
@@ -220,6 +252,7 @@ li {
   border-radius: 15px;
   padding: 3%;
   margin-right: 20px;
+  margin-bottom: 20px;
   color: white;
   text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000,
     1px 1px 0 #000;
@@ -237,13 +270,62 @@ li {
 
 #detailsBackground {
   border-radius: 50%;
-    width: 200px;
-    height: 200px; 
-    margin: auto;
+  width: 200px;
+  height: 200px;
+  margin: auto;
 }
 
 #sprite {
   text-align: center;
-   margin: 20px;
+  margin: 20px;
+}
+
+/* Add Animation */
+@-webkit-keyframes animatetop {
+  from {
+    top: -300px;
+    opacity: 0;
+  }
+  to {
+    top: 0;
+    opacity: 1;
+  }
+}
+
+@keyframes animatetop {
+  from {
+    top: -300px;
+    opacity: 0;
+  }
+  to {
+    top: 0;
+    opacity: 1;
+  }
+}
+
+/* The Close Button */
+.close {
+  color: white;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+  margin: -20px;
+}
+
+.close:hover,
+.close:focus {
+  color: #000;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.modal-header {
+  padding: 2px 16px;
+  color: white;
+  border-bottom: none;
+}
+
+.modal-body {
+  padding: 2px 16px;
 }
 </style>
