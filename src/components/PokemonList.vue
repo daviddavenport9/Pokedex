@@ -22,7 +22,9 @@
     <!-- modal -->
     <div v-if="showModal" id="modal">
       <h3 style="color: white">Pokemon species #{{ speciesNo }}</h3>
-      <img :src="sprite" width="200" height="200" id="sprite" />
+      <div :style="{'background-color': color,}" id="detailsBackground">
+      <img :src="sprite" width="150" height="150" id="sprite" />
+      </div>
       <h1 id="details-name">{{ name }}</h1>
       <h3
         v-for="(pokemonTypes, index) in types"
@@ -97,7 +99,7 @@ export default {
         this.speciesNo = index;
         this.weight = res.data.weight;
         this.height = res.data.height;
-        this.sprite = res.data.sprites.front_default;
+        this.sprite = res.data.sprites.other.dream_world.front_default;
         this.types = res.data.types;
       });
       axios
@@ -181,6 +183,7 @@ li {
   padding-right: 40px;
   text-align: center;
   border-radius: 30px;
+  height: auto;
 }
 
 #details-name {
@@ -230,5 +233,17 @@ li {
   margin-right: 20px;
   text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000,
     1px 1px 0 #000;
+}
+
+#detailsBackground {
+  border-radius: 50%;
+    width: 200px;
+    height: 200px; 
+    margin: auto;
+}
+
+#sprite {
+  text-align: center;
+   margin: 20px;
 }
 </style>
