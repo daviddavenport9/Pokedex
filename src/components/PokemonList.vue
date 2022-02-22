@@ -14,7 +14,9 @@
     <button @click="getPokemonList(8)">VIII</button>
   </div>
   <body>
+    <div v-if="loadingCards" class="loader"></div>
     <!-- Pokemon Cards -->
+    <div v-else>
     <ul>
       <div class="outerWrapper">
         <li v-for="(pokemon, index) in pokemonList" :key="index">
@@ -30,6 +32,7 @@
         </li>
       </div>
     </ul>
+    </div>
     <!-- modal -->
     <div :class="{ outerModal: showModal }">
       <div v-if="showModal" id="modal">
@@ -168,6 +171,8 @@ export default {
       firstEvolutionPicture: null,
       secondEvolutionPicture: null,
       thirdEvolutionPicture: null,
+      loading: false,
+      loadingCards: false
     };
   },
 
@@ -198,6 +203,7 @@ export default {
     },
 
     getPokemonList(generation) {
+      this.loadingCards = true;
       this.pokemonList = [];
       this.promiseArray = [];
       let start = 0;
@@ -245,21 +251,24 @@ export default {
 
       Promise.all(this.promiseArray)
         .then((res) => {
+          this.loadingCards = false;
           res.map((res) => this.pokemonList.push(res.data));
         })
         .catch((err) => console.log(err));
     },
 
-    getDetails(name) {
+    async getDetails(name) {
+      this.loading = true;
       this.showModal = true;
       this.abilities = [];
       this.types = [];
       this.detailsCheck = true;
       this.statsCheck = false;
       this.evolutionCheck = false;
-      axios
+      await axios
         .get("https://pokeapi.co/api/v2/pokemon/" + name)
         .then((res) => {
+          this.loading = false;
           this.name = res.data.name;
           this.abilities = res.data.abilities;
           this.speciesNo = res.data.id;
@@ -273,9 +282,10 @@ export default {
         .catch((error) => {
           console.log(error);
         });
-      axios
+      await axios
         .get("https://pokeapi.co/api/v2/pokemon-species/" + name)
         .then((res) => {
+          this.loading = false;
           this.flavorText = res.data.flavor_text_entries[1].flavor_text;
           this.color = res.data.color.name;
           this.evolutionChainUrl = res.data.evolution_chain.url;
@@ -377,7 +387,7 @@ li {
 }
 
 .outerWrapper :hover {
-  background-color: rgb(218, 223, 236);
+  background-color: #929292fd;
 }
 
 #button {
@@ -424,12 +434,12 @@ li {
   height: 100%;
 }
 
-.modalContentDetails {
+/* .modalContentDetails {
   position: relative;
   margin: auto;
   padding: 0;
   width: 80%;
-}
+} */
 
 .details-name {
   color: white;
@@ -611,5 +621,24 @@ li {
 
 #Generation button:hover {
   background-color: #8a8888fd;
+}
+
+.loader {
+  border: 16px solid #f3f3f3;
+  border-top: 16px solid red;
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  animation: spin 2s linear infinite;
+  margin: auto;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 </style>
