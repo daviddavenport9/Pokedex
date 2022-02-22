@@ -29,7 +29,7 @@
         <div id="detailsNav">
           <button @click="getDetails(pokemonNumber)">Details</button>
           <button @click="getStats()">Stats</button>
-          <button>Evolution</button>
+          <button @click="getEvolution()">Evolution</button>
         </div>
         <div class="modalContent-Details" v-if="detailsCheck">
           <div :style="{ 'background-color': color }" id="detailsBackground">
@@ -60,18 +60,28 @@
             {{ ability.ability.name }}
           </h5>
         </div>
-        <!-- Card Contents  -->
+        <!-- Card Details  -->
         <div v-if="statsCheck">
           <div :style="{ 'background-color': color }" id="detailsBackground">
             <img :src="sprite" width="150" height="150" id="sprite" />
           </div>
           <h1 class="details-name">{{ name }}</h1>
-          <div v-for="(pokemonStats, index) in stats" :key="index" id="outerStatsContainer">
-            
+          <div
+            v-for="(pokemonStats, index) in stats"
+            :key="index"
+            id="outerStatsContainer"
+          >
             <div id="progress">
               <div
                 id="progressBar"
-                :style="pokemonStats.base_stat > 100 ? { width: '100%', 'background-color': color} : {width:  pokemonStats.base_stat + '%', 'background-color': color }"
+                :style="
+                  pokemonStats.base_stat > 100
+                    ? { width: '100%', 'background-color': color }
+                    : {
+                        width: pokemonStats.base_stat + '%',
+                        'background-color': color,
+                      }
+                "
               >
                 <p id="statNumber">{{ pokemonStats.base_stat }}</p>
               </div>
@@ -80,6 +90,29 @@
           </div>
         </div>
         <!-- Stats  -->
+        <div v-if="evolutionCheck">
+          <div id="firstEvolution">
+            <h1 style="color: white; text-transform: capitalize">
+              {{ evolutionBegin }}
+              <img :src="firstEvolutionPicture" width="100" height="100" />
+            </h1>
+          </div>
+          <div v-if="typeof evolutionSecond === 'string'">
+            <img src="@/assets/down-arrow.png" width="50" height="50" />
+            <h1 style="color: white; text-transform: capitalize">
+              {{ evolutionSecond }}
+              <img :src="secondEvolutionPicture" width="100" height="100" />
+            </h1>
+          </div>
+          <div v-if="typeof evolutionThird === 'string'">
+            <img src="@/assets/down-arrow.png" width="50" height="50" />
+            <h1 style="color: white; text-transform: capitalize">
+              {{ evolutionThird }}
+              <img :src="thirdEvolutionPicture" width="100" height="100" />
+            </h1>
+          </div>
+        </div>
+        <!-- Evolution -->
       </div>
       <!-- Modal -->
     </div>
@@ -108,7 +141,14 @@ export default {
       detailsCheck: false,
       stats: [],
       statsCheck: false,
-      progress: null,
+      evolutionCheck: false,
+      evolutionChainUrl: null,
+      evolutionBegin: null,
+      evolutionSecond: null,
+      evolutionThird: null,
+      firstEvolutionPicture: null,
+      secondEvolutionPicture: null,
+      thirdEvolutionPicture: null,
     };
   },
 
@@ -132,32 +172,79 @@ export default {
       this.types = [];
       this.detailsCheck = true;
       this.statsCheck = false;
-      axios.get("https://pokeapi.co/api/v2/pokemon/" + index).then((res) => {
-        this.name = res.data.name;
-        this.abilities = res.data.abilities;
-        this.speciesNo = index;
-        this.weight = res.data.weight;
-        this.height = res.data.height;
-        this.sprite = res.data.sprites.other.dream_world.front_default;
-        this.types = res.data.types;
-        this.pokemonNumber = index.toString();
-        this.stats = res.data.stats;
-      });
+      this.evolutionCheck = false;
+      axios
+        .get("https://pokeapi.co/api/v2/pokemon/" + index)
+        .then((res) => {
+          this.name = res.data.name;
+          this.abilities = res.data.abilities;
+          this.speciesNo = index;
+          this.weight = res.data.weight;
+          this.height = res.data.height;
+          this.sprite = res.data.sprites.other.dream_world.front_default;
+          this.types = res.data.types;
+          this.pokemonNumber = index.toString();
+          this.stats = res.data.stats;
+        })
+        .catch((error) => {
+          console.log(error);
+        });
       axios
         .get("https://pokeapi.co/api/v2/pokemon-species/" + index)
         .then((res) => {
           this.flavorText = res.data.flavor_text_entries[1].flavor_text;
           this.color = res.data.color.name;
+          this.evolutionChainUrl = res.data.evolution_chain.url;
+        })
+        .catch((error) => {
+          console.log(error);
         });
     },
 
     getStats() {
-      console.log(this.stats);
+      this.evolutionCheck = false;
       this.detailsCheck = false;
       this.statsCheck = true;
-      console.log(this.stats[0].base_stat);
-      console.log(this.stats[0].stat.name);
-      //this.progress = this.stats[0].base_stat;
+    },
+
+    async getEvolution() {
+      this.evolutionCheck = true;
+      this.detailsCheck = false;
+      this.statsCheck = false;
+      this.evolutionBegin = null;
+      this.evolutionSecond = null;
+      this.evolutionThird = null;
+      this.firstEvolutionPicture = null;
+
+      await axios
+        .get(this.evolutionChainUrl)
+        .then((res) => {
+          this.evolutionBegin = res.data.chain.species.name;
+          axios
+            .get("https://pokeapi.co/api/v2/pokemon/" + this.evolutionBegin)
+            .then((res) => {
+              this.firstEvolutionPicture =
+                res.data.sprites.other.dream_world.front_default;
+            });
+          this.evolutionSecond = res.data.chain.evolves_to[0].species.name;
+          axios
+            .get("https://pokeapi.co/api/v2/pokemon/" + this.evolutionSecond)
+            .then((res) => {
+              this.secondEvolutionPicture =
+                res.data.sprites.other.dream_world.front_default;
+            });
+          this.evolutionThird =
+            res.data.chain.evolves_to[0].evolves_to[0].species.name;
+          axios
+            .get("https://pokeapi.co/api/v2/pokemon/" + this.evolutionThird)
+            .then((res) => {
+              this.thirdEvolutionPicture =
+                res.data.sprites.other.dream_world.front_default;
+            });
+        })
+        .catch((error) => {
+          console.log(error);
+        });
     },
 
     getHeight() {
@@ -389,7 +476,7 @@ li {
 
 #progress {
   width: 60%;
-  background-color: grey;
+  background-color: rgb(177, 177, 177);
   margin-bottom: 20px;
 }
 
@@ -403,16 +490,17 @@ li {
   color: white;
   text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000,
     1px 1px 0 #000;
-    margin-left: 40px;
+  margin-left: 40px;
 }
 
 #outerStatsContainer {
   display: flex;
+  margin-left: 37px;
 }
 #outerStatsContainer p {
- margin-right: 20px;
- text-align: left;
- margin-left: 20px;
- text-transform: capitalize;
+  margin-right: 20px;
+  text-align: left;
+  margin-left: 20px;
+  text-transform: capitalize;
 }
 </style>
