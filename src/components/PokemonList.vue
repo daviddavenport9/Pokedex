@@ -2,6 +2,17 @@
   <div id="imgContainer">
     <img src="@/assets/pokedex.png" width="700" height="300" />
   </div>
+  <div id="Generation">
+    <h1>Select Generation:</h1>
+    <button @click="getPokemonList(1)">I</button>
+    <button @click="getPokemonList(2)">II</button>
+    <button @click="getPokemonList(3)">III</button>
+    <button @click="getPokemonList(4)">IV</button>
+    <button @click="getPokemonList(5)">V</button>
+    <button @click="getPokemonList(6)">VI</button>
+    <button @click="getPokemonList(7)">VII</button>
+    <button @click="getPokemonList(8)">VIII</button>
+  </div>
   <body>
     <!-- Pokemon Cards -->
     <ul>
@@ -91,7 +102,11 @@
         </div>
         <!-- Stats  -->
         <div v-if="evolutionCheck">
-          <div id="firstEvolution" @click="getDetails(evolutionBegin)" style=" cursor: pointer;">
+          <div
+            id="firstEvolution"
+            @click="getDetails(evolutionBegin)"
+            style="cursor: pointer"
+          >
             <h1 style="color: white; text-transform: capitalize">
               {{ evolutionBegin }}
               <img :src="firstEvolutionPicture" width="100" height="100" />
@@ -99,20 +114,20 @@
           </div>
           <div v-if="typeof evolutionSecond === 'string'">
             <img src="@/assets/down-arrow.png" width="50" height="50" />
-            <div @click="getDetails(evolutionSecond)" style=" cursor: pointer;">
-            <h1 style="color: white; text-transform: capitalize">
-              {{ evolutionSecond }}
-              <img :src="secondEvolutionPicture" width="100" height="100" />
-            </h1>
+            <div @click="getDetails(evolutionSecond)" style="cursor: pointer">
+              <h1 style="color: white; text-transform: capitalize">
+                {{ evolutionSecond }}
+                <img :src="secondEvolutionPicture" width="100" height="100" />
+              </h1>
             </div>
           </div>
           <div v-if="typeof evolutionThird === 'string'">
             <img src="@/assets/down-arrow.png" width="50" height="50" />
-            <div  @click="getDetails(evolutionThird)" style=" cursor: pointer;">
-            <h1 style="color: white; text-transform: capitalize">
-              {{ evolutionThird }}
-              <img :src="thirdEvolutionPicture" width="100" height="100" />
-            </h1>
+            <div @click="getDetails(evolutionThird)" style="cursor: pointer">
+              <h1 style="color: white; text-transform: capitalize">
+                {{ evolutionThird }}
+                <img :src="thirdEvolutionPicture" width="100" height="100" />
+              </h1>
             </div>
           </div>
         </div>
@@ -157,33 +172,73 @@ export default {
   },
 
   methods: {
-    reset(){
-      this.showModal = false,
-      this.name = null,
-      this.abilities= [],
-      this.speciesNo= null,
-      this.sprite= null,
-      this.height= null,
-      this.weight= null,
-      this.flavorText= null,
-      this.types= [],
-      this.color= null,
-      this.pokemonNumber= "",
-      this.detailsCheck= false,
-      this.stats= [],
-      this.statsCheck= false,
-      this.evolutionCheck= false,
-      this.evolutionChainUrl= null,
-      this.evolutionBegin= null,
-      this.evolutionSecond= null,
-      this.evolutionThird= null,
-      this.firstEvolutionPicture= null,
-      this.secondEvolutionPicture= null,
-      this.thirdEvolutionPicture= null
+    reset() {
+      (this.showModal = false),
+        (this.name = null),
+        (this.abilities = []),
+        (this.speciesNo = null),
+        (this.sprite = null),
+        (this.height = null),
+        (this.weight = null),
+        (this.flavorText = null),
+        (this.types = []),
+        (this.color = null),
+        (this.pokemonNumber = ""),
+        (this.detailsCheck = false),
+        (this.stats = []),
+        (this.statsCheck = false),
+        (this.evolutionCheck = false),
+        (this.evolutionChainUrl = null),
+        (this.evolutionBegin = null),
+        (this.evolutionSecond = null),
+        (this.evolutionThird = null),
+        (this.firstEvolutionPicture = null),
+        (this.secondEvolutionPicture = null),
+        (this.thirdEvolutionPicture = null);
     },
 
-    getPokemonList() {
-      for (let i = 1; i <= 151; i++) {
+    getPokemonList(generation) {
+      this.pokemonList = [];
+      this.promiseArray = [];
+      let start = 0;
+      let end = 0;
+      switch (generation) {
+        case 1:
+          start = 1;
+          end = 151;
+          break;
+        case 2:
+          start = 152;
+          end = 251;
+          break;
+        case 3:
+          start = 252;
+          end = 386;
+          break;
+        case 4:
+          start = 387;
+          end = 493;
+          break;
+        case 5:
+          start = 494;
+          end = 649;
+          break;
+        case 6:
+          start = 650;
+          end = 721;
+          break;
+        case 7:
+          start = 722;
+          end = 809;
+          break;
+        case 8:
+          start = 810;
+          end = 898;
+          break;
+        default:
+          console.log("An error has occurred");
+      }
+      for (let i = start; i <= end; i++) {
         const pokeUrl = "https://pokeapi.co/api/v2/pokemon/" + i.toString();
         this.promiseArray.push(axios.get(pokeUrl));
       }
@@ -296,7 +351,7 @@ export default {
   },
 
   mounted() {
-    this.getPokemonList();
+    this.getPokemonList(1);
   },
 };
 </script>
@@ -531,5 +586,30 @@ li {
   text-align: left;
   margin-left: 20px;
   text-transform: capitalize;
+}
+
+#Generation {
+  margin-bottom: 50px;
+  display: flex;
+  margin-left: 20%;
+}
+
+#Generation h1 {
+  margin-right: 30px;
+}
+
+#Generation button {
+  border: none;
+  color: black;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  font-size: 16px;
+  cursor: pointer;
+  float: left;
+}
+
+#Generation button:hover {
+  background-color: #8a8888fd;
 }
 </style>
