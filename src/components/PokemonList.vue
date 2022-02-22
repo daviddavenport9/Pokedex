@@ -13,7 +13,7 @@
             height="250"
           />
           <h2 style="text-transform: capitalize">{{ pokemon.name }}</h2>
-          <button id="button" @click="getDetails(index + 1)">
+          <button id="button" @click="getDetails(pokemon.name)">
             Show Details
           </button>
         </li>
@@ -24,10 +24,10 @@
       <div v-if="showModal" id="modal">
         <div class="modal-header">
           <h3 style="color: white">Pokemon Species #{{ speciesNo }}</h3>
-          <span class="close" @click="showModal = false">&times;</span>
+          <span class="close" @click="reset()">&times;</span>
         </div>
         <div id="detailsNav">
-          <button @click="getDetails(pokemonNumber)">Details</button>
+          <button @click="getDetails(name)">Details</button>
           <button @click="getStats()">Stats</button>
           <button @click="getEvolution()">Evolution</button>
         </div>
@@ -91,7 +91,7 @@
         </div>
         <!-- Stats  -->
         <div v-if="evolutionCheck">
-          <div id="firstEvolution">
+          <div id="firstEvolution" @click="getDetails(evolutionBegin)" style=" cursor: pointer;">
             <h1 style="color: white; text-transform: capitalize">
               {{ evolutionBegin }}
               <img :src="firstEvolutionPicture" width="100" height="100" />
@@ -99,17 +99,21 @@
           </div>
           <div v-if="typeof evolutionSecond === 'string'">
             <img src="@/assets/down-arrow.png" width="50" height="50" />
+            <div @click="getDetails(evolutionSecond)" style=" cursor: pointer;">
             <h1 style="color: white; text-transform: capitalize">
               {{ evolutionSecond }}
               <img :src="secondEvolutionPicture" width="100" height="100" />
             </h1>
+            </div>
           </div>
           <div v-if="typeof evolutionThird === 'string'">
             <img src="@/assets/down-arrow.png" width="50" height="50" />
+            <div  @click="getDetails(evolutionThird)" style=" cursor: pointer;">
             <h1 style="color: white; text-transform: capitalize">
               {{ evolutionThird }}
               <img :src="thirdEvolutionPicture" width="100" height="100" />
             </h1>
+            </div>
           </div>
         </div>
         <!-- Evolution -->
@@ -153,6 +157,31 @@ export default {
   },
 
   methods: {
+    reset(){
+      this.showModal = false,
+      this.name = null,
+      this.abilities= [],
+      this.speciesNo= null,
+      this.sprite= null,
+      this.height= null,
+      this.weight= null,
+      this.flavorText= null,
+      this.types= [],
+      this.color= null,
+      this.pokemonNumber= "",
+      this.detailsCheck= false,
+      this.stats= [],
+      this.statsCheck= false,
+      this.evolutionCheck= false,
+      this.evolutionChainUrl= null,
+      this.evolutionBegin= null,
+      this.evolutionSecond= null,
+      this.evolutionThird= null,
+      this.firstEvolutionPicture= null,
+      this.secondEvolutionPicture= null,
+      this.thirdEvolutionPicture= null
+    },
+
     getPokemonList() {
       for (let i = 1; i <= 151; i++) {
         const pokeUrl = "https://pokeapi.co/api/v2/pokemon/" + i.toString();
@@ -166,7 +195,7 @@ export default {
         .catch((err) => console.log(err));
     },
 
-    getDetails(index) {
+    getDetails(name) {
       this.showModal = true;
       this.abilities = [];
       this.types = [];
@@ -174,23 +203,23 @@ export default {
       this.statsCheck = false;
       this.evolutionCheck = false;
       axios
-        .get("https://pokeapi.co/api/v2/pokemon/" + index)
+        .get("https://pokeapi.co/api/v2/pokemon/" + name)
         .then((res) => {
           this.name = res.data.name;
           this.abilities = res.data.abilities;
-          this.speciesNo = index;
+          this.speciesNo = res.data.id;
           this.weight = res.data.weight;
           this.height = res.data.height;
           this.sprite = res.data.sprites.other.dream_world.front_default;
           this.types = res.data.types;
-          this.pokemonNumber = index.toString();
+          this.pokemonNumber = res.data.id;
           this.stats = res.data.stats;
         })
         .catch((error) => {
           console.log(error);
         });
       axios
-        .get("https://pokeapi.co/api/v2/pokemon-species/" + index)
+        .get("https://pokeapi.co/api/v2/pokemon-species/" + name)
         .then((res) => {
           this.flavorText = res.data.flavor_text_entries[1].flavor_text;
           this.color = res.data.color.name;
