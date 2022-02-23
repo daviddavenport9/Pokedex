@@ -4,139 +4,255 @@
   </div>
   <div id="Generation">
     <h1>Select Generation:</h1>
-    <button @click="getPokemonList(1)">I</button>
-    <button @click="getPokemonList(2)">II</button>
-    <button @click="getPokemonList(3)">III</button>
-    <button @click="getPokemonList(4)">IV</button>
-    <button @click="getPokemonList(5)">V</button>
-    <button @click="getPokemonList(6)">VI</button>
-    <button @click="getPokemonList(7)">VII</button>
-    <button @click="getPokemonList(8)">VIII</button>
+    <button
+      @click="getPokemonList(1)"
+      :style="
+        generationCheck1
+          ? 'background-color: #8a8888fd'
+          : 'background-color: none'
+      "
+    >
+      I
+    </button>
+    <button
+      @click="getPokemonList(2)"
+      :style="
+        generationCheck2
+          ? 'background-color: #8a8888fd'
+          : 'background-color: none'
+      "
+    >
+      II
+    </button>
+    <button
+      @click="getPokemonList(3)"
+      :style="
+        generationCheck3
+          ? 'background-color: #8a8888fd'
+          : 'background-color: none'
+      "
+    >
+      III
+    </button>
+    <button
+      @click="getPokemonList(4)"
+      :style="
+        generationCheck4
+          ? 'background-color: #8a8888fd'
+          : 'background-color: none'
+      "
+    >
+      IV
+    </button>
+    <button
+      @click="getPokemonList(5)"
+      :style="
+        generationCheck5
+          ? 'background-color: #8a8888fd'
+          : 'background-color: none'
+      "
+    >
+      V
+    </button>
+    <button
+      @click="getPokemonList(6)"
+      :style="
+        generationCheck6
+          ? 'background-color: #8a8888fd'
+          : 'background-color: none'
+      "
+    >
+      VI
+    </button>
+    <button
+      @click="getPokemonList(7)"
+      :style="
+        generationCheck7
+          ? 'background-color: #8a8888fd'
+          : 'background-color: none'
+      "
+    >
+      VII
+    </button>
+    <button
+      @click="getPokemonList(8)"
+      :style="
+        generationCheck8
+          ? 'background-color: #8a8888fd'
+          : 'background-color: none'
+      "
+    >
+      VIII
+    </button>
   </div>
   <body>
     <div v-if="loadingCards" class="loader"></div>
     <!-- Pokemon Cards -->
     <div v-else>
-    <ul>
-      <div class="outerWrapper">
-        <li v-for="(pokemon, index) in pokemonList" :key="index">
-          <img
-            :src="pokemon.sprites.other['official-artwork']['front_default']"
-            width="250"
-            height="250"
-          />
-          <h2 style="text-transform: capitalize">{{ pokemon.name }}</h2>
-          <button id="button" @click="getDetails(pokemon.name)">
-            Show Details
-          </button>
-        </li>
-      </div>
-    </ul>
+      <ul>
+        <div class="outerWrapper">
+          <li v-for="(pokemon, index) in pokemonList" :key="index">
+            <img
+              :src="pokemon.sprites.other['official-artwork']['front_default']"
+              width="250"
+              height="250"
+            />
+            <h2 style="text-transform: capitalize">{{ pokemon.name }}</h2>
+            <button id="button" @click="getDetails(pokemon.name)">
+              Show Details
+            </button>
+          </li>
+        </div>
+      </ul>
     </div>
     <!-- modal -->
     <div :class="{ outerModal: showModal }">
       <div v-if="showModal" id="modal">
-          <div v-if="loadingDetails" class="loader"></div>
-          <div v-else>
-        <div class="modal-header">
-          <h3 style="color: white">Pokemon Species #{{ speciesNo }}</h3>
-          <span class="close" @click="reset()">&times;</span>
-        </div>
-        <div id="detailsNav">
-          <button @click="getDetails(name)" :style="detailsCheck ? 'background-color: #444141fd' : 'background-color: none'">Details</button>
-          <button @click="getStats()" :style="statsCheck ? 'background-color: #444141fd' : 'background-color: none'">Stats</button>
-          <button @click="getEvolution()" :style="evolutionCheck ? 'background-color: #444141fd' : 'background-color: none'">Evolution</button>
-        </div>
-        <div class="modalContent-Details" v-if="detailsCheck">
-          <div :style="{ 'background-color': color }" id="detailsBackground">
-            <img :src="sprite" width="150" height="150" id="sprite" />
+        <div v-if="loadingDetails" class="loader"></div>
+        <div v-else>
+          <div class="modal-header">
+            <h3 style="color: white">Pokemon Species #{{ speciesNo }}</h3>
+            <span class="close" @click="reset()">&times;</span>
           </div>
-          <h1 class="details-name">{{ name }}</h1>
-          <h3
-            v-for="(pokemonTypes, index) in types"
-            :key="index"
-            class="pokemonTypes"
-            :style="{ color: color, 'border-color': color }"
-          >
-            {{ pokemonTypes.type.name }}
-          </h3>
-          <p style="color: white">{{ flavorText }}</p>
-          <hr />
-          <div class="columns">
-            <p>Height: {{ getHeight() }}</p>
-            <p>Weight: {{ getWeight() }}</p>
+          <div id="detailsNav">
+            <button
+              @click="getDetails(name)"
+              :style="
+                detailsCheck
+                  ? 'background-color: #444141fd'
+                  : 'background-color: none'
+              "
+            >
+              Details
+            </button>
+            <button
+              @click="getStats()"
+              :style="
+                statsCheck
+                  ? 'background-color: #444141fd'
+                  : 'background-color: none'
+              "
+            >
+              Stats
+            </button>
+            <button
+              @click="getEvolution()"
+              :style="
+                evolutionCheck
+                  ? 'background-color: #444141fd'
+                  : 'background-color: none'
+              "
+            >
+              Evolution
+            </button>
           </div>
-          <h3 style="color: white">Abilities:</h3>
-          <h5
-            v-for="(ability, index) in abilities"
-            :key="index"
-            class="pokemonAbilities"
-            :style="{ 'background-color': color }"
-          >
-            {{ ability.ability.name }}
-          </h5>
-        </div>
-        <!-- Card Details  -->
-        <div v-if="statsCheck">
-          <div :style="{ 'background-color': color }" id="detailsBackground">
-            <img :src="sprite" width="150" height="150" id="sprite" />
+          <div class="modalContent-Details" v-if="detailsCheck">
+            <div :style="{ 'background-color': color }" id="detailsBackground">
+              <img :src="sprite" width="150" height="150" id="sprite" />
+            </div>
+            <h1 class="details-name">{{ name }}</h1>
+            <h3
+              v-for="(pokemonTypes, index) in types"
+              :key="index"
+              class="pokemonTypes"
+              :style="{ color: color, 'border-color': color }"
+            >
+              {{ pokemonTypes.type.name }}
+            </h3>
+            <p style="color: white">{{ flavorText }}</p>
+            <hr />
+            <div class="columns">
+              <p>Height: {{ getHeight() }}</p>
+              <p>Weight: {{ getWeight() }}</p>
+            </div>
+            <h3 style="color: white">Abilities:</h3>
+            <h5
+              v-for="(ability, index) in abilities"
+              :key="index"
+              class="pokemonAbilities"
+              :style="{ 'background-color': color }"
+            >
+              {{ ability.ability.name }}
+            </h5>
           </div>
-          <h1 class="details-name">{{ name }}</h1>
-          <div
-            v-for="(pokemonStats, index) in stats"
-            :key="index"
-            id="outerStatsContainer"
-          >
-            <div id="progress">
+          <!-- Card Details  -->
+          <div v-if="statsCheck">
+            <div :style="{ 'background-color': color }" id="detailsBackground">
+              <img :src="sprite" width="150" height="150" id="sprite" />
+            </div>
+            <h1 class="details-name">{{ name }}</h1>
+            <div
+              v-for="(pokemonStats, index) in stats"
+              :key="index"
+              id="outerStatsContainer"
+            >
+              <div id="progress">
+                <div
+                  id="progressBar"
+                  :style="
+                    pokemonStats.base_stat > 100
+                      ? { width: '100%', 'background-color': color }
+                      : {
+                          width: pokemonStats.base_stat + '%',
+                          'background-color': color,
+                        }
+                  "
+                >
+                  <p id="statNumber">{{ pokemonStats.base_stat }}</p>
+                </div>
+              </div>
+              <p style="color: white">{{ pokemonStats.stat.name }}</p>
+            </div>
+          </div>
+          <!-- Stats  -->
+          <div v-if="evolutionCheck">
+            <div v-if="loadingEvolution" class="loader"></div>
+            <div v-else>
               <div
-                id="progressBar"
-                :style="
-                  pokemonStats.base_stat > 100
-                    ? { width: '100%', 'background-color': color }
-                    : {
-                        width: pokemonStats.base_stat + '%',
-                        'background-color': color,
-                      }
-                "
+                id="firstEvolution"
+                @click="getDetails(evolutionBegin)"
+                style="cursor: pointer"
               >
-                <p id="statNumber">{{ pokemonStats.base_stat }}</p>
+                <h1 style="color: white; text-transform: capitalize">
+                  {{ evolutionBegin }}
+                  <img :src="firstEvolutionPicture" width="100" height="100" />
+                </h1>
+              </div>
+              <div v-if="typeof evolutionSecond === 'string'">
+                <img src="@/assets/down-arrow.png" width="50" height="50" />
+                <div
+                  @click="getDetails(evolutionSecond)"
+                  style="cursor: pointer"
+                >
+                  <h1 style="color: white; text-transform: capitalize">
+                    {{ evolutionSecond }}
+                    <img
+                      :src="secondEvolutionPicture"
+                      width="100"
+                      height="100"
+                    />
+                  </h1>
+                </div>
+              </div>
+              <div v-if="typeof evolutionThird === 'string'">
+                <img src="@/assets/down-arrow.png" width="50" height="50" />
+                <div
+                  @click="getDetails(evolutionThird)"
+                  style="cursor: pointer"
+                >
+                  <h1 style="color: white; text-transform: capitalize">
+                    {{ evolutionThird }}
+                    <img
+                      :src="thirdEvolutionPicture"
+                      width="100"
+                      height="100"
+                    />
+                  </h1>
+                </div>
               </div>
             </div>
-            <p style="color: white">{{ pokemonStats.stat.name }}</p>
           </div>
-        </div>
-        <!-- Stats  -->
-        <div v-if="evolutionCheck">
-          <div
-            id="firstEvolution"
-            @click="getDetails(evolutionBegin)"
-            style="cursor: pointer"
-          >
-            <h1 style="color: white; text-transform: capitalize">
-              {{ evolutionBegin }}
-              <img :src="firstEvolutionPicture" width="100" height="100" />
-            </h1>
-          </div>
-          <div v-if="typeof evolutionSecond === 'string'">
-            <img src="@/assets/down-arrow.png" width="50" height="50" />
-            <div @click="getDetails(evolutionSecond)" style="cursor: pointer">
-              <h1 style="color: white; text-transform: capitalize">
-                {{ evolutionSecond }}
-                <img :src="secondEvolutionPicture" width="100" height="100" />
-              </h1>
-            </div>
-          </div>
-          <div v-if="typeof evolutionThird === 'string'">
-            <img src="@/assets/down-arrow.png" width="50" height="50" />
-            <div @click="getDetails(evolutionThird)" style="cursor: pointer">
-              <h1 style="color: white; text-transform: capitalize">
-                {{ evolutionThird }}
-                <img :src="thirdEvolutionPicture" width="100" height="100" />
-              </h1>
-            </div>
-          </div>
-        </div>
-        <!-- Evolution -->
+          <!-- Evolution -->
         </div>
       </div>
       <!-- Modal -->
@@ -175,7 +291,16 @@ export default {
       secondEvolutionPicture: null,
       thirdEvolutionPicture: null,
       loadingDetails: false,
-      loadingCards: false
+      loadingCards: false,
+      loadingEvolution: false,
+      generationCheck1: false,
+      generationCheck2: false,
+      generationCheck3: false,
+      generationCheck4: false,
+      generationCheck5: false,
+      generationCheck6: false,
+      generationCheck7: false,
+      generationCheck8: false,
     };
   },
 
@@ -211,38 +336,54 @@ export default {
       this.promiseArray = [];
       let start = 0;
       let end = 0;
+      this.generationCheck1 = false;
+      this.generationCheck2 = false;
+      this.generationCheck3 = false;
+      this.generationCheck4 = false;
+      this.generationCheck5 = false;
+      this.generationCheck6 = false;
+      this.generationCheck7 = false;
+      this.generationCheck8 = false;
       switch (generation) {
         case 1:
           start = 1;
           end = 151;
+          this.generationCheck1 = true;
           break;
         case 2:
           start = 152;
           end = 251;
+          this.generationCheck2 = true;
           break;
         case 3:
           start = 252;
           end = 386;
+          this.generationCheck3 = true;
           break;
         case 4:
           start = 387;
           end = 493;
+          this.generationCheck4 = true;
           break;
         case 5:
           start = 494;
           end = 649;
+          this.generationCheck5 = true;
           break;
         case 6:
           start = 650;
           end = 721;
+          this.generationCheck6 = true;
           break;
         case 7:
           start = 722;
           end = 809;
+          this.generationCheck7 = true;
           break;
         case 8:
           start = 810;
           end = 898;
+          this.generationCheck8 = true;
           break;
         default:
           console.log("An error has occurred");
@@ -276,7 +417,7 @@ export default {
           this.speciesNo = res.data.id;
           this.weight = res.data.weight;
           this.height = res.data.height;
-          this.sprite = res.data.sprites.other.dream_world.front_default;
+          this.sprite = res.data.sprites.other.home.front_default;
           this.types = res.data.types;
           this.pokemonNumber = res.data.id;
           this.stats = res.data.stats;
@@ -293,6 +434,7 @@ export default {
           this.evolutionChainUrl = res.data.evolution_chain.url;
         })
         .catch((error) => {
+          this.loadingDetails = false;
           console.log(error);
         });
     },
@@ -304,7 +446,7 @@ export default {
     },
 
     async getEvolution() {
-       this.loadingDetails = true;
+      this.loadingEvolution = true;
       this.evolutionCheck = true;
       this.detailsCheck = false;
       this.statsCheck = false;
@@ -320,29 +462,30 @@ export default {
           axios
             .get("https://pokeapi.co/api/v2/pokemon/" + this.evolutionBegin)
             .then((res) => {
-               this.loadingDetails = false;
+              this.loadingEvolution = false;
               this.firstEvolutionPicture =
-                res.data.sprites.other.dream_world.front_default;
+                res.data.sprites.other.home.front_default;
             });
           this.evolutionSecond = res.data.chain.evolves_to[0].species.name;
           axios
             .get("https://pokeapi.co/api/v2/pokemon/" + this.evolutionSecond)
             .then((res) => {
-              this.loadingDetails = false;
+              this.loadingEvolution = false;
               this.secondEvolutionPicture =
-                res.data.sprites.other.dream_world.front_default;
+                res.data.sprites.other.home.front_default;
             });
           this.evolutionThird =
             res.data.chain.evolves_to[0].evolves_to[0].species.name;
           axios
             .get("https://pokeapi.co/api/v2/pokemon/" + this.evolutionThird)
             .then((res) => {
-              this.loadingDetails = false;
+              this.loadingEvolution = false;
               this.thirdEvolutionPicture =
-                res.data.sprites.other.dream_world.front_default;
+                res.data.sprites.other.home.front_default;
             });
         })
         .catch((error) => {
+          this.loadingEvolution = false;
           console.log(error);
         });
     },
