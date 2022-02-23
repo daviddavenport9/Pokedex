@@ -159,6 +159,9 @@
             >
               {{ pokemonTypes.type.name }}
             </h3>
+            <div class="legendaryContainer">
+            <h1 v-if="isLegendary" class="shimmer">LEGENDARY</h1>
+            </div>
             <p style="color: white">{{ flavorText }}</p>
             <hr />
             <div class="columns">
@@ -301,6 +304,7 @@ export default {
       generationCheck6: false,
       generationCheck7: false,
       generationCheck8: false,
+      isLegendary: false,
     };
   },
 
@@ -328,6 +332,7 @@ export default {
         (this.firstEvolutionPicture = null),
         (this.secondEvolutionPicture = null),
         (this.thirdEvolutionPicture = null);
+      this.isLegendary = false;
     },
 
     getPokemonList(generation) {
@@ -429,9 +434,10 @@ export default {
         .get("https://pokeapi.co/api/v2/pokemon-species/" + name)
         .then((res) => {
           this.loadingDetails = false;
-          this.flavorText = res.data.flavor_text_entries[1].flavor_text;
+          this.flavorText = res.data.flavor_text_entries[7].flavor_text;
           this.color = res.data.color.name;
           this.evolutionChainUrl = res.data.evolution_chain.url;
+          this.isLegendary = res.data.is_legendary;
         })
         .catch((error) => {
           this.loadingDetails = false;
@@ -582,13 +588,6 @@ li {
   width: 100%;
   height: 100%;
 }
-
-/* .modalContentDetails {
-  position: relative;
-  margin: auto;
-  padding: 0;
-  width: 80%;
-} */
 
 .details-name {
   color: white;
@@ -789,5 +788,77 @@ li {
   100% {
     transform: rotate(360deg);
   }
+}
+
+.shimmer {
+  font-family: "Lato";
+  font-weight: 300;
+  font-size: 3em;
+  margin: 0 auto;
+  /* padding: 0 140px 0 0; */
+  display: inline;
+  margin-bottom: 0;
+}
+.shimmer {
+  text-align: center;
+  color: rgba(37, 0, 58, 0.1);
+  background: -webkit-gradient(linear, left top, right top, from(#222), to(#222), color-stop(0.5, #fff));
+  background: -moz-gradient(linear, left top, right top, from(#222), to(#222), color-stop(0.5, #fff));
+  background: gradient(linear, left top, right top, from(#222), to(#222), color-stop(0.5, #fff));
+  -webkit-background-size: 125px 100%;
+  -moz-background-size: 125px 100%;
+  background-size: 125px 100%;
+  -webkit-background-clip: text;
+  -moz-background-clip: text;
+  background-clip: text;
+  -webkit-animation-name: shimmer;
+  -moz-animation-name: shimmer;
+  animation-name: shimmer;
+  -webkit-animation-duration: 2s;
+  -moz-animation-duration: 2s;
+  animation-duration: 2s;
+  -webkit-animation-iteration-count: infinite;
+  -moz-animation-iteration-count: infinite;
+  animation-iteration-count: infinite;
+  background-repeat: no-repeat;
+  background-position: 0 0;
+  background-color: #222;
+}
+@-moz-keyframes shimmer {
+  0% {
+    background-position: top left;
+  }
+  100% {
+    background-position: top right;
+  }
+}
+@-webkit-keyframes shimmer {
+  0% {
+    background-position: top left;
+  }
+  100% {
+    background-position: top right;
+  }
+}
+@-o-keyframes shimmer {
+  0% {
+    background-position: top left;
+  }
+  100% {
+    background-position: top right;
+  }
+}
+@keyframes shimmer {
+  0% {
+    background-position: top left;
+  }
+  100% {
+    background-position: top right;
+  }
+}
+
+.legendaryContainer {
+  background-color: rgb(61, 60, 60);
+  border-radius: 20px;
 }
 </style>
