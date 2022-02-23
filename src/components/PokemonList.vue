@@ -36,14 +36,16 @@
     <!-- modal -->
     <div :class="{ outerModal: showModal }">
       <div v-if="showModal" id="modal">
+          <div v-if="loadingDetails" class="loader"></div>
+          <div v-else>
         <div class="modal-header">
           <h3 style="color: white">Pokemon Species #{{ speciesNo }}</h3>
           <span class="close" @click="reset()">&times;</span>
         </div>
         <div id="detailsNav">
-          <button @click="getDetails(name)">Details</button>
-          <button @click="getStats()">Stats</button>
-          <button @click="getEvolution()">Evolution</button>
+          <button @click="getDetails(name)" :style="detailsCheck ? 'background-color: #444141fd' : 'background-color: none'">Details</button>
+          <button @click="getStats()" :style="statsCheck ? 'background-color: #444141fd' : 'background-color: none'">Stats</button>
+          <button @click="getEvolution()" :style="evolutionCheck ? 'background-color: #444141fd' : 'background-color: none'">Evolution</button>
         </div>
         <div class="modalContent-Details" v-if="detailsCheck">
           <div :style="{ 'background-color': color }" id="detailsBackground">
@@ -135,6 +137,7 @@
           </div>
         </div>
         <!-- Evolution -->
+        </div>
       </div>
       <!-- Modal -->
     </div>
@@ -171,7 +174,7 @@ export default {
       firstEvolutionPicture: null,
       secondEvolutionPicture: null,
       thirdEvolutionPicture: null,
-      loading: false,
+      loadingDetails: false,
       loadingCards: false
     };
   },
@@ -258,7 +261,7 @@ export default {
     },
 
     async getDetails(name) {
-      this.loading = true;
+      this.loadingDetails = true;
       this.showModal = true;
       this.abilities = [];
       this.types = [];
@@ -268,7 +271,6 @@ export default {
       await axios
         .get("https://pokeapi.co/api/v2/pokemon/" + name)
         .then((res) => {
-          this.loading = false;
           this.name = res.data.name;
           this.abilities = res.data.abilities;
           this.speciesNo = res.data.id;
@@ -285,7 +287,7 @@ export default {
       await axios
         .get("https://pokeapi.co/api/v2/pokemon-species/" + name)
         .then((res) => {
-          this.loading = false;
+          this.loadingDetails = false;
           this.flavorText = res.data.flavor_text_entries[1].flavor_text;
           this.color = res.data.color.name;
           this.evolutionChainUrl = res.data.evolution_chain.url;
@@ -302,6 +304,7 @@ export default {
     },
 
     async getEvolution() {
+       this.loadingDetails = true;
       this.evolutionCheck = true;
       this.detailsCheck = false;
       this.statsCheck = false;
@@ -317,6 +320,7 @@ export default {
           axios
             .get("https://pokeapi.co/api/v2/pokemon/" + this.evolutionBegin)
             .then((res) => {
+               this.loadingDetails = false;
               this.firstEvolutionPicture =
                 res.data.sprites.other.dream_world.front_default;
             });
@@ -324,6 +328,7 @@ export default {
           axios
             .get("https://pokeapi.co/api/v2/pokemon/" + this.evolutionSecond)
             .then((res) => {
+              this.loadingDetails = false;
               this.secondEvolutionPicture =
                 res.data.sprites.other.dream_world.front_default;
             });
@@ -332,6 +337,7 @@ export default {
           axios
             .get("https://pokeapi.co/api/v2/pokemon/" + this.evolutionThird)
             .then((res) => {
+              this.loadingDetails = false;
               this.thirdEvolutionPicture =
                 res.data.sprites.other.dream_world.front_default;
             });
@@ -387,7 +393,7 @@ li {
 }
 
 .outerWrapper :hover {
-  background-color: #929292fd;
+  background-color: #c7c6c6fd;
 }
 
 #button {
